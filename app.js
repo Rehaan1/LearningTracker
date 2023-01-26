@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
+const trackLearningRouter = require('./api/routes/trackLearning')
 
 const app = express()
 
@@ -22,6 +23,8 @@ mongoose.connect(process.env.MONGODB_DB_URI, {useUnifiedTopology: true, useNewUr
         console.log('-------------------------')
         console.log('Error: '+err)
     })
+
+app.use('/learning', trackLearningRouter)
 
 app.get('/',(req,res) =>{
     res.status(200).json({
