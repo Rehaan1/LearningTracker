@@ -1,3 +1,5 @@
 .env
 node_modules
-plugin
+icon16.png
+icon48.png
+icon128.png
