@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Learning = require('../../models/learningDataModel')
+const {spawn} = require('child_process')
 
 router.get('/', (req,res)=>{
     res.status(200).json({
@@ -77,6 +78,25 @@ router.get('/getLearnings',(req,res)=>{
                 error: error
             })
         })
+})
+
+router.get('/generateCalplot', (req,res)=>{
+
+    // spawn new child process to call the python script
+    const python = spawn('python', ['-c', 'import python_heatmap.heatmap as heatmap; heatmap.create_heatmap()'])
+
+    // collect data from script
+    python.stdout.on('data', (data) => {
+        console.log('Pipe data from python ....')
+        dataToSend = data.toString();
+    })
+
+    //in close event we are sure that stream from child process is closed
+    python.on('close', (code) => {
+        console.log('child process close all stdio with code', code)
+        // send data to browser
+        res.send(JSON.parse(dataToSend))
+    })
 })
 
 
